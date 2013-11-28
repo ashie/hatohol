@@ -4,7 +4,7 @@ notifications:
 language: cpp
 compiler:
   - gcc
-  - clang
+#  - clang
 install:
   - server/misc/setup-cutter.sh
   - sudo apt-get install -qq -y autotools-dev libglib2.0-dev libjson-glib-dev libsoup2.4-dev libmysqlclient-dev sqlite3 ndoutils-nagios3-mysql uuid-dev npm python-pip expect python-dev
