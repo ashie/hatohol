@@ -1,6 +1,6 @@
 notifications:
   recipients:
-    - hatohol-commit@lists.sourceforge.net
+#    - hatohol-commit@lists.sourceforge.net
 language: cpp
 compiler:
   - gcc
@@ -25,15 +25,15 @@ before_script:
   - sudo chmod 777 /var/run
   - make -j`cat /proc/cpuinfo | grep ^processor| wc -l`
 script:
-  - pushd .
-  - ./server/mlpl/test/run-test.sh
-  - cd server/test && ./run-test.sh
-  - popd; pushd .
-  - cd server/tools/test && ./run-test.sh
-  - popd; pushd .
-  - cd client/test/python && ./run-test.sh
-  - popd; pushd .
-  - cd client/test/node && ./run-test.sh
-  - popd; pushd .
+#  - pushd .
+#  - ./server/mlpl/test/run-test.sh
+#  - cd server/test && ./run-test.sh
+#  - popd; pushd .
+#  - cd server/tools/test && ./run-test.sh
+#  - popd; pushd .
+#  - cd client/test/python && ./run-test.sh
+#  - popd; pushd .
+#  - cd client/test/node && ./run-test.sh
+#  - popd; pushd .
   - test/launch-hatohol-for-test.sh
-  - mocha-phantomjs http://localhost:8000/test/index.html
+#  - mocha-phantomjs http://localhost:8000/test/index.html
