@@ -202,8 +202,9 @@ void ArmZabbixAPI::getHosts
 
 	for (int i = 0; i < numData; i++) {
 		parseAndPushHostsData(parser, variableHostsTablePtr, i);
-		parseAndPushHostsGroupsData(parser,
-		                            variableHostsGroupsTablePtr, i);
+		if (checkAPIVersion(1, 4, 0))
+			parseAndPushHostsGroupsData(parser,
+						    variableHostsGroupsTablePtr, i);
 	}
 	hostsTablePtr = ItemTablePtr(variableHostsTablePtr);
 	hostsGroupsTablePtr = ItemTablePtr(variableHostsGroupsTablePtr);
@@ -770,11 +771,25 @@ void ArmZabbixAPI::parseAndPushTriggerData
 	pushString(parser, grp, "error",       ITEM_ID_ZBX_TRIGGERS_ERROR);
 	pushUint64(parser, grp, "templateid",  ITEM_ID_ZBX_TRIGGERS_TEMPLATEID);
 	pushInt   (parser, grp, "type",        ITEM_ID_ZBX_TRIGGERS_TYPE);
-	pushInt   (parser, grp, "value_flags", ITEM_ID_ZBX_TRIGGERS_VALUE_FLAGS);
-	pushInt   (parser, grp, "flags",       ITEM_ID_ZBX_TRIGGERS_FLAGS);
+	if (checkAPIVersion(1, 4, 0)) {
+		pushInt(parser, grp, "value_flags",
+			ITEM_ID_ZBX_TRIGGERS_VALUE_FLAGS);
+		pushInt(parser, grp, "flags",
+			ITEM_ID_ZBX_TRIGGERS_FLAGS);
+	} else {
+		grp->add(new ItemInt(ITEM_ID_ZBX_TRIGGERS_VALUE_FLAGS, 0),
+			 false);
+		grp->add(new ItemInt(ITEM_ID_ZBX_TRIGGERS_FLAGS, 0),
+			 false);
+	}
+		
 
 	// get hostid
-	pushTriggersHostid(parser, grp);
+	if (checkAPIVersion(1, 4, 0))
+		pushTriggersHostid(parser, grp);
+	else
+		grp->addNewItem(ITEM_ID_ZBX_TRIGGERS_HOSTID,
+				0, ITEM_DATA_NULL);
 
 	tablePtr->add(grp);
 
@@ -845,7 +860,11 @@ void ArmZabbixAPI::parseAndPushItemsData
 	           ITEM_ID_ZBX_ITEMS_SNMP_COMMUNITY);
 	pushString(parser, grp, "snmp_oid",     ITEM_ID_ZBX_ITEMS_SNMP_OID);
 	pushUint64(parser, grp, "hostid",       ITEM_ID_ZBX_ITEMS_HOSTID);
-	pushString(parser, grp, "name",         ITEM_ID_ZBX_ITEMS_NAME);
+	if (checkAPIVersion(1, 4, 0))
+		pushString(parser, grp, "name", ITEM_ID_ZBX_ITEMS_NAME);
+	else
+		grp->add(new ItemString(ITEM_ID_ZBX_ITEMS_NAME, ""),
+			 false);
 	pushString(parser, grp, "key_",         ITEM_ID_ZBX_ITEMS_KEY_);
 	pushInt   (parser, grp, "delay",        ITEM_ID_ZBX_ITEMS_DELAY);
 	pushInt   (parser, grp, "history",      ITEM_ID_ZBX_ITEMS_HISTORY);
@@ -894,18 +913,41 @@ void ArmZabbixAPI::parseAndPushItemsData
 	pushString(parser, grp, "publickey",   ITEM_ID_ZBX_ITEMS_PUBLICKEY);
 	pushString(parser, grp, "privatekey",  ITEM_ID_ZBX_ITEMS_PRIVATEKEY);
 	pushInt   (parser, grp, "mtime",       ITEM_ID_ZBX_ITEMS_MTIME);
-	pushInt   (parser, grp, "lastns",      ITEM_ID_ZBX_ITEMS_LASTNS);
-	pushInt   (parser, grp, "flags",       ITEM_ID_ZBX_ITEMS_FLAGS);
-	pushString(parser, grp, "filter",      ITEM_ID_ZBX_ITEMS_FILTER);
-	pushUint64(parser, grp, "interfaceid", ITEM_ID_ZBX_ITEMS_INTERFACEID);
-	pushString(parser, grp, "port",        ITEM_ID_ZBX_ITEMS_PORT);
+	if (checkAPIVersion(1, 4, 0)) {
+		pushInt(parser, grp, "lastns", ITEM_ID_ZBX_ITEMS_LASTNS);
+		pushInt(parser, grp, "flags",  ITEM_ID_ZBX_ITEMS_FLAGS);
+		pushString(parser, grp, "filter", ITEM_ID_ZBX_ITEMS_FILTER);
+		pushUint64(parser, grp, "interfaceid",
+			   ITEM_ID_ZBX_ITEMS_INTERFACEID);
+		pushString(parser, grp, "port", ITEM_ID_ZBX_ITEMS_PORT);
+	} else {
+		grp->add(new ItemInt(ITEM_ID_ZBX_ITEMS_LASTNS, 0), false);
+		grp->add(new ItemInt(ITEM_ID_ZBX_ITEMS_FLAGS, 0), false);
+		grp->add(new ItemString(ITEM_ID_ZBX_ITEMS_FILTER, ""), false);
+		grp->add(new ItemUint64(ITEM_ID_ZBX_ITEMS_INTERFACEID, 0),
+			 false);
+		grp->add(new ItemString(ITEM_ID_ZBX_ITEMS_PORT, ""), false);
+	}
 	pushString(parser, grp, "description", ITEM_ID_ZBX_ITEMS_DESCRIPTION);
-	pushInt   (parser, grp, "inventory_link",
-	           ITEM_ID_ZBX_ITEMS_INVENTORY_LINK);
-	pushString(parser, grp, "lifetime",    ITEM_ID_ZBX_ITEMS_LIFETIME);
+	if (checkAPIVersion(1, 4, 0)) {
+		pushInt (parser, grp, "inventory_link",
+			 ITEM_ID_ZBX_ITEMS_INVENTORY_LINK);
+		pushString(parser, grp, "lifetime",
+			   ITEM_ID_ZBX_ITEMS_LIFETIME);
+	} else {
+		grp->add(new ItemInt(ITEM_ID_ZBX_ITEMS_INVENTORY_LINK, 0),
+			 false);
+		grp->add(new ItemString(ITEM_ID_ZBX_ITEMS_LIFETIME, ""),
+			 false);
+	}
 
 	// application
-	pushApplicationid(parser, grp);
+	if (checkAPIVersion(1, 4, 0)) {
+		pushApplicationid(parser, grp);
+	} else {
+		grp->add(new ItemUint64(ITEM_ID_ZBX_ITEMS_APPLICATIONID, 0),
+			 false);
+	}
 
 	tablePtr->add(grp);
 
@@ -957,14 +999,28 @@ void ArmZabbixAPI::parseAndPushHostsData
 	           ITEM_ID_ZBX_HOSTS_SNMP_ERRORS_FROM);
 	pushString(parser, grp, "ipmi_error", ITEM_ID_ZBX_HOSTS_IPMI_ERROR);
 	pushString(parser, grp, "snmp_error", ITEM_ID_ZBX_HOSTS_SNMP_ERROR);
-	pushInt   (parser, grp, "jmx_disable_until",
-	           ITEM_ID_ZBX_HOSTS_JMX_DISABLE_UNTIL);
-	pushInt   (parser, grp, "jmx_available",
-	           ITEM_ID_ZBX_HOSTS_JMX_AVAILABLE);
-	pushInt   (parser, grp, "jmx_errors_from",
-	           ITEM_ID_ZBX_HOSTS_JMX_ERRORS_FROM);
-	pushString(parser, grp, "jmx_error", ITEM_ID_ZBX_HOSTS_JMX_ERROR);
-	pushString(parser, grp, "name",      ITEM_ID_ZBX_HOSTS_NAME);
+	if (checkAPIVersion(1, 4, 0)) {
+		pushInt(parser, grp, "jmx_disable_until",
+			ITEM_ID_ZBX_HOSTS_JMX_DISABLE_UNTIL);
+		pushInt(parser, grp, "jmx_available",
+			ITEM_ID_ZBX_HOSTS_JMX_AVAILABLE);
+		pushInt(parser, grp, "jmx_errors_from",
+			ITEM_ID_ZBX_HOSTS_JMX_ERRORS_FROM);
+		pushString(parser, grp, "jmx_error",
+			   ITEM_ID_ZBX_HOSTS_JMX_ERROR);
+		pushString(parser, grp, "name", ITEM_ID_ZBX_HOSTS_NAME);
+	} else {
+		grp->add(new ItemInt(ITEM_ID_ZBX_HOSTS_JMX_DISABLE_UNTIL, 0),
+			 false);
+		grp->add(new ItemInt(ITEM_ID_ZBX_HOSTS_JMX_AVAILABLE, 0),
+			 false);
+		grp->add(new ItemInt(ITEM_ID_ZBX_HOSTS_JMX_ERRORS_FROM, 0),
+			 false);
+		grp->add(new ItemString(ITEM_ID_ZBX_HOSTS_JMX_ERROR, ""),
+			 false);
+		grp->add(new ItemString(ITEM_ID_ZBX_HOSTS_NAME, ""),
+			 false);
+	}
 	tablePtr->add(grp);
 	parser.endElement();
 }
@@ -1012,14 +1068,18 @@ void ArmZabbixAPI::parseAndPushEventsData
 	pushInt   (parser, grp, "value",        ITEM_ID_ZBX_EVENTS_VALUE);
 	pushInt   (parser, grp, "acknowledged",
 	           ITEM_ID_ZBX_EVENTS_ACKNOWLEDGED);
-	pushInt   (parser, grp, "ns",           ITEM_ID_ZBX_EVENTS_NS);
-	if (checkAPIVersion(2, 2, 0)) {
-		// Zabbix 2.2 doesn't have "value_changed" property
-		grp->add(new ItemInt(ITEM_ID_ZBX_EVENTS_VALUE_CHANGED, 0),
-			 false);
+	if (checkAPIVersion(1, 4, 0)) {
+		pushInt(parser, grp, "ns", ITEM_ID_ZBX_EVENTS_NS);
 	} else {
+		grp->add(new ItemInt(ITEM_ID_ZBX_EVENTS_NS, 0),
+			 false);
+	}
+	if (checkAPIVersion(1, 4, 0) && !checkAPIVersion(2, 2, 0)) {
 		pushInt(parser, grp, "value_changed",
 			ITEM_ID_ZBX_EVENTS_VALUE_CHANGED);
+	} else {
+		grp->add(new ItemInt(ITEM_ID_ZBX_EVENTS_VALUE_CHANGED, 0),
+			 false);
 	}
 	tablePtr->add(grp);
 	parser.endElement();
