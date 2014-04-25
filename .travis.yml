@@ -1,6 +1,6 @@
 notifications:
   recipients:
-    - hatohol-commit@lists.sourceforge.net
+#    - hatohol-commit@lists.sourceforge.net
 language: cpp
 compiler:
   - gcc
