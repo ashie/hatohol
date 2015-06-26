@@ -112,8 +112,8 @@ class CommandQueue(unittest.TestCase):
         [cq.push(code, args) for i in range(0, num_push)]
         # Too ugly. But we don't have other way to wait for completion of
         # processing in the background thread.
-        #while cq.__q.empty():
-        time.sleep(3)
+        while cq.__q.empty():
+            time.sleep(0.01)
         cq.pop_all()
         self.assertEquals(num_push, gadz.num_called)
 
