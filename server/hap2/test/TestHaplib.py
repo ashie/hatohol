@@ -113,7 +113,8 @@ class CommandQueue(unittest.TestCase):
         # Too ugly. But we don't have other way to wait for completion of
         # processing in the background thread.
         while cq.__q.empty():
-            time.sleep(0.01)
+            print "wait"
+            time.sleep(1)
         cq.pop_all()
         self.assertEquals(num_push, gadz.num_called)
 
