@@ -12,14 +12,14 @@ env:
     - NO_MAKE=yes
   matrix:
     - RUN_TEST="test/run-server-test.sh"
-matrix:
-  include:
-    - compiler: gcc
-      env: RUN_TEST="test/dist-check.sh"
-    - compiler: gcc
-      env: RUN_TEST="test/run-client-test.sh"
-    - compiler: gcc
-      env: RUN_TEST="test/feature-test.sh"
+#matrix:
+#  include:
+#    - compiler: gcc
+#      env: RUN_TEST="test/dist-check.sh"
+#    - compiler: gcc
+#      env: RUN_TEST="test/run-client-test.sh"
+#    - compiler: gcc
+#      env: RUN_TEST="test/feature-test.sh"
 
 before_install:
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
