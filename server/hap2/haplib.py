@@ -232,15 +232,16 @@ class CommandQueue(Callback):
             sleep_time = wakeup_time - time.time()
             if sleep_time <= 0:
                 return
-            print "__wait"
             self.__wait(sleep_time)
 
     def __wait(self, sleep_time):
         try:
+            print "try __wait"
             code, args = \
                 self.__q.get(block=True, timeout=sleep_time)
             self(code, args)
         except Queue.Empty:
+            print "except Queue.Empty"
             # If no command is forthcomming within timeout,
             # this path is executed.
             pass
