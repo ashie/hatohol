@@ -232,6 +232,7 @@ class CommandQueue(Callback):
             sleep_time = wakeup_time - time.time()
             if sleep_time <= 0:
                 return
+            print "__wait"
             self.__wait(sleep_time)
 
     def __wait(self, sleep_time):
@@ -807,11 +808,17 @@ class BasePoller(HapiProcessor):
                                       self.__set_ms_info)
 
     def poll(self):
+       print "poll_setup"
        ctx = self.poll_setup()
+       print "poll_hosts"
        self.poll_hosts()
+       print "poll_host_groups"
        self.poll_host_groups()
+       print "poll_host_group_membership"
        self.poll_host_group_membership()
+       print "poll_triggers"
        self.poll_triggers()
+       print "poll_events"
        self.poll_events()
 
     def get_command_queue(self):
@@ -859,6 +866,7 @@ class BasePoller(HapiProcessor):
         failure_reason = ""
         try:
             self.__command_queue.pop_all()
+            print "poll"
             self.poll()
             succeeded = True
         except:
