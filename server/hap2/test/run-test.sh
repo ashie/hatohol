@@ -13,4 +13,4 @@ if [ -f $RABBITMQ_PORT_CONF ]; then
   . $RABBITMQ_PORT_CONF
   export RABBITMQ_NODE_PORT
 fi
-python -m unittest discover -s $test_dir -p 'Test*.py' "$@"
+python -m unittest TestHaplib.CommandQueue.test_pop_all
