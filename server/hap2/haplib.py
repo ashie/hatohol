@@ -251,7 +251,7 @@ class CommandQueue(Callback):
 
     def pop_all(self):
         while not self.__q.empty():
-            self.__wait(0.3)
+            self.__wait(0.01)
 
 
 class MonitoringServerInfo:
