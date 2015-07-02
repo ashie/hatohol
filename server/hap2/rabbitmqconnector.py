@@ -63,7 +63,7 @@ class RabbitMQConnector(Transporter):
         set_if_not_none(conn_args, "virtual_host", vhost)
         set_if_not_none(conn_args, "credentials", credentials)
         self.__setup_ssl(conn_args, transporter_args)
-        #conn_args["socket_timeout"] = 2
+        conn_args["socket_timeout"] = 2
         conn_args["retry_delay"] = 2
 
         param = pika.connection.ConnectionParameters(**conn_args)
