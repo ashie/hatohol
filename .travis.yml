@@ -31,28 +31,22 @@ addons:
       - g++-4.8
       - autotools-dev
       - libglib2.0-dev
-      - libjson-glib-dev
       - libsoup2.4-dev
       - libmysqlclient-dev
       - sqlite3
-      - ndoutils-nagios3-mysql
       - uuid-dev
-      - npm
       - python-pip
       - expect
       - python-dev
-      - libq
-      - pidmessaging2-dev
-      - libqpidtypes1-dev
-      - libqpidcommon2-dev
-      - qpidd
       - rabbitmq-server
-      - python-pika
 
 before_install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 
 install:
+  # These pacakges aren't approved by apt addon of Travis.
+  # See also: https://github.com/travis-ci/apt-package-whitelist#package-approval-process
+  - sudo apt-get install -qq -y libjson-glib-dev ndoutils-nagios3-mysql npm libq pidmessaging2-dev libqpidtypes1-dev libqpidcommon2-dev qpidd python-pika
   - server/misc/setup-cutter.sh
   - server/misc/setup-librabbitmq-ppa.sh
   - sudo sh -c "printf '[%s]\n%s=%s\n' mysqld character-set-server utf8  > /etc/mysql/conf.d/utf8.cnf"
