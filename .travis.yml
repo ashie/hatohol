@@ -22,18 +22,39 @@ matrix:
       env: RUN_TEST="test/run-client-test.sh"
     - compiler: gcc
       env: RUN_TEST="test/feature-test.sh"
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - libstdc++-4.8-dev
+      - g++-4.8
+      - autotools-dev
+      - libglib2.0-dev
+      - libjson-glib-dev
+      - libsoup2.4-dev
+      - libmysqlclient-dev
+      - sqlite3
+      - ndoutils-nagios3-mysql
+      - uuid-dev
+      - npm
+      - python-pip
+      - expect
+      - python-dev
+      - libq
+      - pidmessaging2-dev
+      - libqpidtypes1-dev
+      - libqpidcommon2-dev
+      - qpidd
+      - rabbitmq-server
+      - python-pika
 
 before_install:
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-  - sudo apt-get update -qq
-  - if [ "$CXX" = "clang++" ]; then sudo apt-get install -qq libstdc++-4.8-dev; fi
-  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 
 install:
   - server/misc/setup-cutter.sh
   - server/misc/setup-librabbitmq-ppa.sh
-  - sudo apt-get install -qq -y autotools-dev libglib2.0-dev libjson-glib-dev libsoup2.4-dev libmysqlclient-dev sqlite3 ndoutils-nagios3-mysql uuid-dev npm python-pip expect python-dev libqpidmessaging2-dev libqpidtypes1-dev libqpidcommon2-dev qpidd rabbitmq-server python-pika
   - sudo sh -c "printf '[%s]\n%s=%s\n' mysqld character-set-server utf8  > /etc/mysql/conf.d/utf8.cnf"
   - sudo sh -c "printf '[%s]\n%s=%s\n' client default-character-set utf8  >> /etc/mysql/conf.d/utf8.cnf"
   - mysql -u root < data/test/setup.sql
