@@ -24,7 +24,13 @@ env:
 #      env: RUN_TEST="test/feature-test.sh"
 
 before_install:
-  - cat /etc/mysql/my.cnf
+  - df -T
+  - mount
+  - find /etc/mysql -f type | xargs cat
+  - dmesg
+  - cat /proc/cpuinfo
+  - cat /proc/meminfo
+  - top -n1
   - /bin/false
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update -qq
