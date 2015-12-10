@@ -26,7 +26,7 @@ env:
 before_install:
   - df -T
   - mount
-  - find /etc/mysql -f type | xargs cat
+  - find /etc/mysql -type f | xargs cat
   - dmesg
   - cat /proc/cpuinfo
   - cat /proc/meminfo
